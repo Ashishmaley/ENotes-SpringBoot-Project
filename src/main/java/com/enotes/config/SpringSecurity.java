@@ -38,7 +38,7 @@ public class SpringSecurity {
                         .requestMatchers("/", "/register", "/login", "/saveUser", "/verify**") // Allow requests to
                                                                                                // /saveUser
                         .permitAll()
-                        .requestMatchers("/**").authenticated())
+                        .requestMatchers("/user/**").authenticated())
                 .formLogin(login -> login
                         .loginPage("/login")
                         .loginProcessingUrl("/signIn")

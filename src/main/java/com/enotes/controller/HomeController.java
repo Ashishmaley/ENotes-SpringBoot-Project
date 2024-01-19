@@ -9,10 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.enotes.entity.Note;
 import com.enotes.entity.User;
@@ -90,17 +90,29 @@ public class HomeController {
     }
 
     @PostMapping("/saveUser")
-    public String saveUser(@ModelAttribute User user, HttpSession session, HttpServletRequest req) {
-        String url = req.getRequestURL().toString();
-        url = url.replace(req.getServletPath(), "");
-        User u = (User) userService.saveUser(user, url);
-        if (u != null) {
-            session.setAttribute("msg", "User Creted Successfuly");
-            return "register";
-        } else
-            session.setAttribute("msg", "User failed to create");
+public String saveUser(@RequestParam("email") String email, 
+                       @RequestParam("password") String password, 
+                       HttpSession session, HttpServletRequest req) {
+    String url = req.getRequestURL().toString();
+    url = url.replace(req.getServletPath(), "");
+
+    // Create a new User object
+    User user = new User();
+    user.setEmail(email);
+    user.setPassword(password);
+
+    // Save the user using userService.saveUser
+    User u = userService.saveUser(user, url);
+
+    if (u != null) {
+        session.setAttribute("msg", "User Created Successfully");
+        return "register";
+    } else {
+        session.setAttribute("msg", "User failed to create");
         return "register";
     }
+}
+
 
     @GetMapping("/verify")
     public String verifyAccount(@Param("code") String code, org.springframework.ui.Model m) {

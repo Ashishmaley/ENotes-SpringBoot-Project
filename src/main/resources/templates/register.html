@@ -14,7 +14,7 @@
                 <div class="card p-4 m-2" style="width: 50rem;">
                     <div class="card-body">
                         <h5 class="card-header">Register</h5>
-                        <form action="/saveUser" method="post">
+                        <form th:action="@{/saveUser}" method="post">
                             <div class="form-group m-1">
                                 <th:bloch th:if="${session.msg}"><p class="text-center text-success">[[${session.msg}]]</p></th:bloch>
                                 <label for="exampleInputEmail1" class="form-label">Email address</label>
