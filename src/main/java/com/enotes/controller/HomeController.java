@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -124,7 +125,7 @@ public class HomeController {
         } else
             m.addAttribute("msg", "Note is null");
 
-        return "redirect:/user/addNotes";
+        return "redirect:/user/viewNotes";
     }
 
     @GetMapping("/user/addNotes")
@@ -150,9 +151,11 @@ public class HomeController {
         return "redirect:/user/viewNotes";
     }
 
-    @GetMapping("/user/error")
-    public String error() {
-        return "error";
+    @GetMapping("/user/deleteNote/{id}")
+    public String deleteNote(@PathVariable("id") int id, @ModelAttribute Note note, HttpSession session, Principal p,
+            Model m) {
+        noteService.deleteNote(id);
+        return "redirect:/user/viewNotes";
     }
 
 }
