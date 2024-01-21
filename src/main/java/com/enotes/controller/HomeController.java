@@ -105,10 +105,10 @@ public String saveUser(@RequestParam("email") String email,
     User u = userService.saveUser(user, url);
 
     if (u != null) {
-        session.setAttribute("msg", "User Created Successfully");
+        session.setAttribute("msg", "User Created Successfully,Verify Your Mail!!");
         return "register";
     } else {
-        session.setAttribute("msg", "User failed to create");
+        session.setAttribute("msg", "Failed to create user,can be already exist");
         return "register";
     }
 }
@@ -117,7 +117,7 @@ public String saveUser(@RequestParam("email") String email,
     @GetMapping("/verify")
     public String verifyAccount(@Param("code") String code, org.springframework.ui.Model m) {
         if (userService.verifyAccount(code)) {
-            m.addAttribute("msg", "account verified!");
+            m.addAttribute("msg", "account verified successfully!");
         } else
             m.addAttribute("msg", "account verification failed!");
         return "message";
