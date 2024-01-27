@@ -1,8 +1,9 @@
 package com.enotes.services;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import com.enotes.entity.Note;
@@ -13,8 +14,10 @@ public class NoteService {
     @Autowired
     private NoteRepo noteRepo;
 
-    public List<Note> getNotesByUser(User user ) {
-        return noteRepo.findNoteByUser(user);
+    public Page<Note> getNotesByUser(User user, int pageNo) {
+        
+        Pageable page = PageRequest.of(pageNo, 5);
+        return noteRepo.findNoteByUser(user,page);
     }
 
     public Note findById(int id) {

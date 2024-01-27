@@ -13,8 +13,8 @@
 
 <body>
   <section>
-    <h1 class="text-uppercase text-center card-header text-primary">your Notes</h1>
-    <div class="row m-4">
+    <h1 class=" text-center card-header text-primary">YOUR Notes</h1>
+    <div class="row m-5">
       <p>[[${msg}]]</p>
       <div th:each="n: ${notes}" class="col-12">
         <div class="card p-5">
@@ -32,6 +32,31 @@
           </div>
         </div>
       </div>
+    </div>
+    <div class="row">
+    <div class="col-md-4 offset-md-1 text-right p-1">
+      <p class="fw-bold">Total Notes : [[${totalElements}]]</p>
+    </div>
+  <div class="col-md-6 ">
+    <ul class="pagination">
+    <th:block th:if="${currentPage != 0}">
+      <li class="page-item">
+        <a class="page-link" th:href="@{'/user/viewNotes?pageNo='+${currentPage-1}}">Previous</a>
+      </li>
+      </th:block>
+      <th:block th:each="page: ${#numbers.sequence(1, totalPages)}">
+        <li class="page-item" th:classappend="${currentPage == page - 1 ? 'active' : ''}">
+          <a class="page-link" th:href="@{'/user/viewNotes?pageNo='+${page-1}}">[[${page}]]</a>
+        </li>
+      </th:block>
+      <th:block th:if="${currentPage + 1 != totalPages}">
+      <li  class="page-item">
+        <a class="page-link" th:href="@{'/user/viewNotes?pageNo='+${currentPage+1}}">Next</a>
+      </li>
+      </th:block>
+    </ul>
+
+  </div>
     </div>
   </section>
 </body>

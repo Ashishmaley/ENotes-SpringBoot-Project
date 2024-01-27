@@ -3,9 +3,9 @@ package com.enotes.controller;
 import java.security.Principal;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -77,10 +77,13 @@ public class HomeController {
     }
 
     @GetMapping("/user/viewNotes")
-    public String viewNotes(Model m, Principal p) {
+    public String viewNotes(Model m, Principal p, @RequestParam(defaultValue = "0") Integer pageNo) {
         User user = getUser(p, m);
-        List<Note> notes = noteService.getNotesByUser(user);
-        m.addAttribute("notes", notes);
+        Page<Note> notes = noteService.getNotesByUser(user, pageNo);
+        m.addAttribute("currentPage", pageNo);
+        m.addAttribute("totalElements", notes.getTotalElements());
+        m.addAttribute("totalPages", notes.getTotalPages());
+        m.addAttribute("notes", notes.getContent());
         return "view_notes";
     }
 
@@ -90,29 +93,28 @@ public class HomeController {
     }
 
     @PostMapping("/saveUser")
-public String saveUser(@RequestParam("email") String email, 
-                       @RequestParam("password") String password, 
-                       HttpSession session, HttpServletRequest req) {
-    String url = req.getRequestURL().toString();
-    url = url.replace(req.getServletPath(), "");
+    public String saveUser(@RequestParam("email") String email,
+            @RequestParam("password") String password,
+            HttpSession session, HttpServletRequest req) {
+        String url = req.getRequestURL().toString();
+        url = url.replace(req.getServletPath(), "");
 
-    // Create a new User object
-    User user = new User();
-    user.setEmail(email);
-    user.setPassword(password);
+        // Create a new User object
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword(password);
 
-    // Save the user using userService.saveUser
-    User u = userService.saveUser(user, url);
+        // Save the user using userService.saveUser
+        User u = userService.saveUser(user, url);
 
-    if (u != null) {
-        session.setAttribute("msg", "User Created Successfully,Verify Your Mail!!");
-        return "register";
-    } else {
-        session.setAttribute("msg", "Failed to create user,can be already exist");
-        return "register";
+        if (u != null) {
+            session.setAttribute("msg", "User Created Successfully,Verify Your Mail!!");
+            return "register";
+        } else {
+            session.setAttribute("msg", "Failed to create user,can be already exist");
+            return "register";
+        }
     }
-}
-
 
     @GetMapping("/verify")
     public String verifyAccount(@Param("code") String code, org.springframework.ui.Model m) {
